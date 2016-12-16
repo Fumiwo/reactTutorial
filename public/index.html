@@ -12,13 +12,26 @@
   <body>
     <div id="example"></div>
     <script type="text/babel">
+      var data = [
+        {
+          id: 1,
+          author: 'saito',
+          text: 'text comment 1'
+        },
+        {
+          id: 2,
+          author: 'suzuki',
+          text: 'text comment 2'
+        }
+      ];
+
       // コメント欄コンポーネント
       var CommentBox = React.createClass({
         render: function() {
           return (
             <div className="commentBox">
               <h1>Comments</h1>
-              <CommentList />
+              <CommentList data={this.props.data} />
               <CommentForm />
             </div>
           );
@@ -28,9 +41,17 @@
       // コメントリストコンポーネント
       var CommentList = React.createClass({
         render: function() {
+          var commentNodes = this.props.data.map(function(comment) {
+            return (
+              <Comment author={comment.author} key={comment.id}>
+                {comment.text}
+              </Comment>
+            );
+          });
+
           return (
             <div className="commentList">
-              Hello, world! CommentList.
+              {commentNodes}
             </div>
           );
         }
@@ -46,8 +67,25 @@
           );
         }
       });
+
+      // コメントコンポーネント
+      // DOM ツリー(JSX) の中で {this.props.children} でテキスト、
+      // コンポーネントを差し込むことができる。props(property)
+      var Comment = React.createClass({
+        render: function() {
+          return (
+            <div className="comment">
+              <h2 className="commentAuthor">
+                {this.props.author}
+              </h2>
+              {this.props.children}
+            </div>
+          );
+        }
+      });
+
       ReactDOM.render(
-        <CommentBox />,
+        <CommentBox data={data} />,
         document.getElementById('example')
       );
     </script>
